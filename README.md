@@ -142,7 +142,7 @@ Here’s how you would make the request with cURL:
 ```
 curl --request GET \
   --url http://localhost:8080/api/hotsauces \
-  --header 'authorization: Bearer {ACCESS-TOKEN}'
+  -H "authorization: Bearer {ACCESS-TOKEN}"
 ```
 
 (Be sure to replace **`{ACCESS-TOKEN}`** with the actual access token.)
@@ -159,7 +159,7 @@ For example, the following cURL retrieves the hot sauce whose `id` is **5**:
 ```
 curl --request GET \
   --url http://localhost:8080/api/hotsauces/5 \
-  --header 'authorization: Bearer {ACCESS-TOKEN}'
+  -H "authorization: Bearer {ACCESS-TOKEN}"
 ```
 
 The API reponse will be a single JSON dictionary similar to the example below:
@@ -173,13 +173,64 @@ The API reponse will be a single JSON dictionary similar to the example below:
 
 To get a count of all the hot sauces in the database, issue a GET request to **`api/hotsauces/count`**.
 
-Here’s how you would make the request with cURL:
+The example below shows how you would make the request with cURL:
 
 ```
 curl --request GET \
   --url http://localhost:8080/api/hotsauces/count \
-  --header 'authorization: Bearer {ACCESS-TOKEN}'
-```
+  -H "authorization: Bearer {ACCESS-TOKEN}"
 ```
 
 The API reponse will be a single number.
+
+
+#### Adding a new sauce: `POST api/hotsauces`
+
+To add a hot sauce, issue a POST request to **`api/hotsauces/`**, and include the sauce data as a JSON dictionary.
+
+The example below shows the the use of cURL to add a sauce with the following properties:
+
+* `brandName`: **Dave’s Gourmet**
+* `sauceName`: **Temporary Insanity**
+* `url`: **https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE**
+* `description`: This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!
+* `heat`: **57000**
+
+```
+curl --request POST \
+  --url http://localhost:8080/api/hotsauces/ \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "Dave’s Gourmet", "sauceName": "Temporary Insanity", "url": "https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE", "description": "This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!", "heat": 57000}' \
+  -H "authorization: Bearer {ACCESS-TOKEN}"
+```
+
+
+#### Editing an existing sauce: `PUT api/hotsauces/{id}`
+
+To edit a hot sauce, issue a PUT request to **`api/hotsauces/{id}`**, where **`{id}`** is the `id` of the sauce to be edited, and include the sauce data as a JSON dictionary. Any sauce attributes not included in the dictionary will remain unchanged.
+
+The example below shows the the use of cURL to edit the sauce whose `id` value is **3** so that the following attributes are updated:
+
+* `brandName` is changed to **Tampa Bay Hot Sauce Company**
+* `heat` is changed to **2600**
+
+```
+curl --request PUT \
+  --url http://localhost:8080/api/hotsauces/3 \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "Tampa Bay Hot Sauce Company", "heat": 2600}' \
+  -H "authorization: Bearer {ACCESS-TOKEN}"
+```
+
+
+#### Deleting an existing sauce: `DELETE api/hotsauces/{id}`
+
+To get a hot sauce, issue a DELETE request to **`api/hotsauces/{id}`**, where **`{id}`** is the `id` of the sauce to be deleted.
+
+The example below shows the use of cURL to delete the sauce whose `id` value is **6**:
+
+```
+curl --request DELETE \
+  --url http://localhost:8080/api/hotsauces/6 \
+  -H "authorization: Bearer {ACCESS-TOKEN}"
+```
