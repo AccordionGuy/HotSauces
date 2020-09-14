@@ -1,0 +1,8 @@
+auth0:
+  audience: http://hotsauces.demo
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-ne4fe9k3.us.auth0.com/
