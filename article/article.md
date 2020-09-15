@@ -3,7 +3,32 @@
 Learn how to write a Spring Boot API in Kotlin and secure it with Auth0.
 
 
-**TL;DR:** In this article, you’ll learn how to quickly build a Spring Boot API in Kotlin and then secure it with Auth0’s authentication service. You’ll start by scaffolding a Spring Boot project and using it to build an API. Then you’ll use Auth0 to secure that API so that all but one of its endpoints require authentication in order to use them. Along the way, you’ll learn the principles behind OAuth2, the protocol that powers Auth0. 
+**TL;DR:** In this article, you’ll learn how to quickly build a RESTful API using the Spring Boot framework and the Kotlin programming language. Once you’ve done that, you’ll use Auth0 to secure the API so that only authenticated parties can   use its key functions. Along the way, you’ll learn the principles behind OAuth2, the protocol that powers Auth0. You can find the final code for the project developed throughout this article in [this GitHub repository](https://github.com/AccordionGuy/HotSauces).
+
+
+## Spring Framework, Spring Boot, and Kotlin: An Overview
+
+### Spring Framework
+
+Spring Framework, often shortened to just “Spring”, is a popular open source application framework for the Java platform. It’s built on the principle of Inversion of Control, whose name implies that control of a Spring application is quite different from the way program control happens in traditional software. Instead of your code directing the application and calling on functionality from a library or framework, the framework directs the application and calls on the functionality of your code.
+
+This approach makes it possible to write an application as a collections of components, and the connections between them are maintained by Spring. There are also a lot of ready-built Spring components called *dependencies* that provide functionality that applications commonly require. The end result is a system for building applications that are modular, flexible, and easy to maintain — and in less time.
+
+Spring is often described — especially by Java developers, who’ve grown used to working with unwieldy frameworks — as lightweight. It provides a set of built-in often-needed capabilities such as MVC, caching, messaging, security, and especially data access. It significantly reduces the amount of code you have to write and lets you focus on the features that are unique to your application.
+
+While Spring is often used for web and server-based applications, it’s a general application framework, and it can be used to write desktop and mobile applications as well.
+
+### Spring Boot
+
+Spring Boot is a framework built on top of Spring that simplifies Spring development. It does this by enforcing an opinionated approach to Spring application development through a “convention over configuration” approach, the use of default setups that applications are likely to use, and a standardized application structure created by a generator that goes by the decidedly “Web 2.0” name of [Spring Initializr](https://www.tiobe.com/tiobe-index/). Thanks to its “it just works” approach, it’s propbably the fastest way to develop applications with the Spring framework.
+
+### Kotlin
+
+Kotlin is part of the wave of programming languages that appeared in the 2010s, which includes Dart, Rust, Go, and Swift. These languages have a number of common traits including their own takes on object-oriented programming from the lessons of the 1990s and functional programming from the lessons of the 2000s, inferred strong static typing, and meteoric rises in popularity (all of them are in [TIOBE’s index of popular programming languages](https://www.tiobe.com/tiobe-index/), and all of them except Kotlin are in the top 20).
+
+Kotlin is unique in its origins: It’s a programming language designed by JetBrains, a company that specializes in making developer tools. Designed to have all the language features of Scala but compile more quickly, interoperate with Java and utilize the Java platform without Java’s verbosity, and serve as a language that JetBrains would use to developing their applications and drive their sales, it has grown to become the preferred language for Android app development. It’s also making serious inroads into what was once Java’s wen and enterprise development territory.
+
+Since Spring and Spring Boot are based on the Java platform, you can use them to build applications using any JVM-based programming language, which includes Kotlin. If Java’s verbosity is bringing you down, or if you’re an Android developer who wants to use the same language to write the back end for your app, Spring and Spring Boot development in Kotlin is for you!
 
 
 ## Prerequisites
@@ -14,15 +39,8 @@ To follow along with this article, you’ll need the following installed on your
 * Your favorite code editor.
 
 
-## Spring Framework, Spring Boot, and Kotlin: An Overview
-
-### Spring Framework
 
 
-
-### Spring Boot
-
-### Kotlin
 
 
 ## What You’ll Build: A Hot Sauce API
@@ -396,6 +414,9 @@ class DataLoader(var hotSauceRepository: HotSauceRepository) {
 ```
 
 ## Authorize
+
+![Hawaii driver's license featuring Joey deVilla as “McLovin’”](./images/mclovin drivers license.png)
+
 
 ```
 # ./src/main/resources/application.yml
