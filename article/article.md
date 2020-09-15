@@ -426,10 +426,12 @@ The code’s considerably less complex that it could be, thanks to some annotati
 * Any method annotated with `@GetMapping()` responds to `GET` requests. If `@GetMapping()` takes a parameter, it means that it responds to requests whose endpoint begins with that parameter. Parameters in braces (`{` and `}`) are variable parameters.
 * Any method annotated with `@PostMapping()`, `@PutMapping()`, and `@DeleteMapping` is similar to methods, annotated with `@GetMapping()`, except that they respond to `POST`, `PUT`, and `DELETE` requests respectively.
 
-You could run the app now and it would work, but since the database in in-memory and unitialized, you wouldn’t have any hot sauces to work with. Let’s add a class to load the database with some initial values.
-
 
 ### Initializing the database
+
+You could run the app now and it would work, but since the database in in-memory and unitialized, you wouldn’t have any hot sauces to work with. Let’s add a class to load the database with some initial values.
+
+Create a new file named **DataLoader.kt** in the **./src/main/kotlin/com/auth0/hotsauces/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/DataLoader.kt
@@ -560,6 +562,25 @@ class DataLoader(var hotSauceRepository: HotSauceRepository) {
 
 }
 ```
+
+This class has a couple of annotations:
+
+* `DataLoader` is annotated with `@Component`, which marks it so that Spring will autodetect the class when it’s needed. Since the code in this class references the  application’s instance of `HotSauceRepository`, this class will be instantiated when an instance of `HotSauceRepository` is created.
+* The `loadData()` method is annotated with `@PostConstruct`, which specifies that it should be called as soon as the class has been initialized.
+
+
+#### Kotlin Extensions
+
+This class also makes use of a handy Kotlin feature: **[Extensions](https://kotlinlang.org/docs/reference/extensions.html)**. These are properties or functions that can be added to classes to extend their capabilities without having to access their code or somehow decorate them.
+
+At the beginning of the class, you added an extension to the `String` class:
+
+```
+fun String.trimIndentsAndRemoveNewlines() = this.trimIndent().replace("\n", " ")
+```
+
+This adds the method `trimIndentsAndRemoveNewlines()` to the `String` class, which removes indentations and newline characters from multiline strings. The assignments to each hot sauce’s `description` property is done using multiline strings (which are delimited with triple-quotes — `"""`) to make the code easier to read.
+
 
 ## Authorize
 
