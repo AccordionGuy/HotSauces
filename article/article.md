@@ -14,7 +14,7 @@ Learn how to write a Spring Boot API in Kotlin and secure it with Auth0.
 
 [Spring Framework](https://spring.io/projects/spring-framework), often shortened to just “Spring”, is a popular open source application framework for the Java platform. It’s built on the principle of [inversion of control](https://dzone.com/articles/understanding-inversion-of-control-and-dependency), whose name implies that control of a Spring application is quite different from the way program control happens in traditional software. Instead of your code directing the application and calling on functionality from a library or framework, the framework directs the application and calls on the functionality of your code.
 
-This approach makes it possible to write an application as a collections of components, and the connections between them are maintained by Spring. There are also a lot of ready-built Spring components called *dependencies* that provide functionality that applications commonly require. The end result is a system for building applications that are modular, flexible, and easy to maintain — and in less time.
+This approach makes it possible to write an application as a collection of components, and the connections between them are maintained by Spring. There are also a lot of ready-built Spring components called *dependencies* that provide functionality that applications commonly require. The end result is a system for building applications that are modular, flexible, and easy to maintain — and in less time.
 
 Spring is often described — especially by Java developers, who’ve grown used to working with unwieldy frameworks — as lightweight. It provides a set of built-in often-needed capabilities such as MVC, caching, messaging, security, and especially data access. It significantly reduces the amount of code you have to write and lets you focus on the features that are unique to your application.
 
@@ -102,13 +102,23 @@ Once filled out, the form should look like this:
 
 With the form filled out, tap the **GENERATE** button. The site will generate a .zip file, which  and it will automatically be downloaded to your local machine.
 
-Unzip the file to reveal the **hotsauces** project folder.
+Unzip the file to reveal the **hotsauces** project folder:
+
+![Hotsauce’s project structure](./images/hotsauces project structure.png)
+
+You’ll work in two specific areas of the project in this exercise:
+
+* **./src/main/kotlin/com/auth0/hotsauces/**: The project code goes into this directory. At the moment, it contains a single file, **HotSaucesApplication.kt**. This contains a simple application class, which is the first project code that is executed when the application is run. You’ll add code to this directory.
+* **./build.gradle.kts**: The Gradle build file. Among other things, it specifies which dependencies will be used by the project. You’ll add some security-related dependencies to this file when securing the API.
 
 
-### Defining the Resource
+### Defining `HotSauces`, the Class Behind the API’s Resource
 
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/wide-hot-sauces-tray.png)
 
-The catalog stores the following attributes for each hot sauce:
+The first piece of code you’ll write is the model behind the API’s only resource — hot sauces.
+
+Each hot sauce has the following attributes:
 
 <table>
 	<tr>
@@ -117,32 +127,32 @@ The catalog stores the following attributes for each hot sauce:
 		<th>Description</th>
 	</tr>
 	<tr>
-		<td><code>id</code></td>
+		<td><strong><code>id</code></strong></td>
 		<td>number</td>
 		<td>The unique identifier for the hot sauce, and primary key.</td>
 	</tr>
 	<tr>
-		<td><code>brandName</code></td>
+		<td><strong><code>brandName</code></strong></td>
 		<td>string</td>
 		<td>The name of the producer of the hot sauce.</td>
 	</tr>
 	<tr>
-		<td><code>sauceName</code></td>
+		<td><strong><code>sauceName</code></strong></td>
 		<td>string</td>
 		<td>The name of the hot sauce.</td>
 	</tr>
 	<tr>
-		<td><code>description</code></td>
+		<td><strong><code>description</code></strong></td>
 		<td>string</td>
 		<td>A description of the hot sauce, with the appropriate keywords. This may be lengthy.</td>
 	</tr>
 	<tr>
-		<td><code>url</code></td>
+		<td><strong><code>url</code></strong></td>
 		<td>number</td>
 		<td>The URL for the web page for the hot sauce.</td>
 	</tr>
 	<tr>
-		<td><code>heat</code></td>
+		<td><strong><code>heat</code></strong></td>
 		<td>number</td>
 		<td>The spiciness of the hot sauce, expressed in <a href="https://pepperheadsforlife.com/the-scoville-scale/">Scoville heat units (SHUs).</a></td>
 	</tr>
