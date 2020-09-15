@@ -1,6 +1,6 @@
 package com.auth0.hotsauces
 
-import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.data.repository.CrudRepository
 
 
-interface HotSauceRepository: PagingAndSortingRepository<HotSauce, Long>
+interface HotSauceRepository: CrudRepository<HotSauce, Long>

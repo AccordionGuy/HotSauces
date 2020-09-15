@@ -158,8 +158,7 @@ Each hot sauce has the following attributes:
 	</tr>
 </table>
 
-
-
+Create a new file named **HotSauce.kt** in the **./src/main/kotlin/com/auth0/hotsauces/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/HotSauce.kt
@@ -195,15 +194,31 @@ data class HotSauce(
 )
 ```
 
+`HotSauce` is a Kotlin **[data class](https://kotlinlang.org/docs/reference/data-classes.html)**, whose job is to hold data. Data classes all properties and no methods — or at least no explicitly defined methods, anyway. The compiler automatically provides a handful of “behind the scenes” methods, including `equals()`, `hashCode()`, and `toString()`.
+
+Kotlin classes, data classes included, have a constructor build into the class header. This constructor, called the **primary constructor**, takes its parameters in the parentheses that follow the class name. `HotSauce`, like many data classes,  is just a class header and primary costructor, and nothing else.
+
+Even though there isn’t much to the class, it has uses some annotations to pull in a lot of extra functionality:
+
+* `HotSauce` is annontated with `@Entity`, which informs the Java Persistence API (JPA, one of the dependencies that you added in Spring Initializr) that its instances will be persisted in the database.
+* The `id` property is annotated with both `@Id` and `@GeneratedValue`, which makes sense, as it will map to to the `id` field in the corresponding database table.
+* The `@Lob` annotation is short for “large object,” and it’s used to annotate the `description` and `url` properties because they could contain strings longer than 256 characters. By default, JPA maps `String`s in entities to the `VARCHAR(256)` type in the database; marking a `String` as `@Lob` tells JPA to map it to the `TEXT` type instead.
+
+
+
+
+
+# *** TODO ***
+
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/HotSauceRepository.kt
 
 package com.auth0.hotsauces
 
-import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.data.repository.CrudRepository
 
 
-interface HotSauceRepository: PagingAndSortingRepository<HotSauce, Long>
+interface HotSauceRepository: CrudRepository<HotSauce, Long>
 ```
 
 ```
