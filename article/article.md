@@ -10,7 +10,9 @@ Learn how to write a Spring Boot API in Kotlin and secure it with Auth0.
 
 ### Spring Framework
 
-Spring Framework, often shortened to just “Spring”, is a popular open source application framework for the Java platform. It’s built on the principle of Inversion of Control, whose name implies that control of a Spring application is quite different from the way program control happens in traditional software. Instead of your code directing the application and calling on functionality from a library or framework, the framework directs the application and calls on the functionality of your code.
+![Spring Framework icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-framework-icon.jpg)
+
+[Spring Framework](https://spring.io/projects/spring-framework), often shortened to just “Spring”, is a popular open source application framework for the Java platform. It’s built on the principle of [inversion of control](https://dzone.com/articles/understanding-inversion-of-control-and-dependency), whose name implies that control of a Spring application is quite different from the way program control happens in traditional software. Instead of your code directing the application and calling on functionality from a library or framework, the framework directs the application and calls on the functionality of your code.
 
 This approach makes it possible to write an application as a collections of components, and the connections between them are maintained by Spring. There are also a lot of ready-built Spring components called *dependencies* that provide functionality that applications commonly require. The end result is a system for building applications that are modular, flexible, and easy to maintain — and in less time.
 
@@ -20,20 +22,24 @@ While Spring is often used for web and server-based applications, it’s a gener
 
 ### Spring Boot
 
-Spring Boot is a framework built on top of Spring that simplifies Spring development. It does this by enforcing an opinionated approach to Spring application development through a “convention over configuration” approach, the use of default setups that applications are likely to use, and a standardized application structure created by a generator that goes by the decidedly “Web 2.0” name of [Spring Initializr](https://www.tiobe.com/tiobe-index/). Thanks to its “it just works” approach, it’s propbably the fastest way to develop applications with the Spring framework.
+![Spring Boot icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-boot-icon.jpg)
+
+[Spring Boot](https://spring.io/projects/spring-boot) is a framework built on top of Spring that simplifies Spring development. It does this by enforcing an [opinionated](https://www.quora.com/What-is-a-Opinionated-Framework) approach to Spring application development through [“convention over configuration”](https://facilethings.com/blog/en/convention-over-configuration), the use of default setups that applications are likely to use, and a standardized application structure created by a generator that goes by the decidedly “Web 2.0” name of [Spring Initializr](https://www.tiobe.com/tiobe-index/). Thanks to its “it just works” approach, it’s propbably the fastest way to develop applications with the Spring framework.
 
 ### Kotlin
 
-Kotlin is part of the wave of programming languages that appeared in the 2010s, which includes Dart, Rust, Go, and Swift. These languages have a number of common traits including their own takes on object-oriented programming from the lessons of the 1990s and functional programming from the lessons of the 2000s, inferred strong static typing, and meteoric rises in popularity (all of them are in [TIOBE’s index of popular programming languages](https://www.tiobe.com/tiobe-index/), and all of them except Kotlin are in the top 20).
+![Kotlin icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/kotlin-icon.jpg)
 
-Kotlin is unique in its origins: It’s a programming language designed by JetBrains, a company that specializes in making developer tools. Designed to have all the language features of Scala but compile more quickly, interoperate with Java and utilize the Java platform without Java’s verbosity, and serve as a language that JetBrains would use to developing their applications and drive their sales, it has grown to become the preferred language for Android app development. It’s also making serious inroads into what was once Java’s wen and enterprise development territory.
+[Kotlin](https://kotlinlang.org/) is part of the wave of programming languages that appeared in the 2010s, which includes [Dart](https://dart.dev/), [Go](https://golang.org/), [Rust](https://www.rust-lang.org/), and [Swift](https://developer.apple.com/swift/). These languages have a number of common traits including their own takes on object-oriented programming from the lessons of the 1990s and functional programming from the lessons of the 2000s, inferred strong static typing, and meteoric rises in popularity (all of them are in [TIOBE’s index of popular programming languages](https://www.tiobe.com/tiobe-index/), and all of them except Kotlin are in the top 20).
+
+As a programming language designed by [a company that makes developer tools](https://developer.apple.com/swift/), Kotlin is unique in its origin. It was designed to be an [improvement on Java](https://kotlinlang.org/docs/reference/comparison-to-java.html), with all the language features of [Scala](https://www.scala-lang.org/) (but faster compile times) and with the power and convenience that comes from interoperability with Java and the Java platform. It has grown to become the preferred language for Android app development; two-thirds of the top 1,000 Play Store apps were written in Kotlin. It’s also making serious inroads into web and enterprise development territory.
 
 Since Spring and Spring Boot are based on the Java platform, you can use them to build applications using any JVM-based programming language, which includes Kotlin. If Java’s verbosity is bringing you down, or if you’re an Android developer who wants to use the same language to write the back end for your app, Spring and Spring Boot development in Kotlin is for you!
 
 
 ## What You’ll Build: A Hot Sauce API
 
-![](http://www.globalnerdy.com/wp-content/uploads/2020/09/a-hot-sauce-api.jpg)
+![A Hot Sauce API (A tray of hot sauce bottles, viewed from above))](http://www.globalnerdy.com/wp-content/uploads/2020/09/a-hot-sauce-api.jpg)
 
 The API you’ll build will be a catalog of hot sauces. It will be a simple one, exposing just a single resource named **hotsauces**. 
 
@@ -45,6 +51,62 @@ The API will provide endpoints for:
 * Adding a hot sauce to the catalog
 * Editing any hot sauce in the catalog
 * Deleting a hot sauce from the catalog
+
+In the first part of the project, you’ll build the API. Once built, you’ll secure it so that the endpoints for CRUD operations will require authentication, while the endpoint for testing to see if the API is active will remain public.
+
+
+## Prerequisites
+
+To follow along with this article, you’ll need the following installed on your local machine:
+
+* **[JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)**
+* Your favorite code editor.
+
+You’ll also need internet access, as you’ll be using the Spring Initializr web page and the [Gradle](https://gradle.org/) build tool, which goes online to download project dependencies.
+
+
+## Building the API
+
+### Scaffolding with Spring Initializr
+
+The preferred way to set up a new Spring Boot project is to use **[Spring Initializr](start.spring.io)**, a web application that generates a basic Spring Boot project, complete with all the necessary configurations, your choice of dependencies, and Gradle or Maven build files. It’s available online at [start.spring.io](https://start.spring.io/) and built into the Ultimate Edition of [IntelliJ IDEA](https://www.jetbrains.com/idea/).
+
+You *could* create a new project manually using Spring Boot’s command-line interface, but Spring Initializr organizes its projects using a standardized directory layout for JVM-based projects. This makes your projects easier to maintain, and lets you focus on what your application actually *does*.
+
+Point your favorite browser at the [Spring Initializr page](https://start.spring.io/):
+
+![The Spring Initializr webpage](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-initializr-blank.png)
+
+Here’s how you should fill it out:
+
+* *Project:* Select **Gradle Project**.
+* *Language:* Select **Kotlin**.
+* *Spring Boot:* Select **2.3.3**.
+* *Project Metadata:*
+	* *Group:* Enter **com.auth0**.
+	* *Artifact:* Enter **hotsauces**.
+	* *Name:* This will autofill; just use the value in this field.
+	* *Description:* 
+	* *Package name:* This will autofill; just use the value in this field.
+	* *Packaging:* Select **Jar**.
+	* *Java:* Select **11**.
+* *Dependencies:* Tap the **ADD DEPENDENCIES...** button and choose the following:
+	* **Spring Boot DevTools**: A set of convenient tools for development.
+	* **Spring Web**: Provides a web server and facilities for building RESTfulweb applications and APIs.
+	* **Spring Data JPA**: Makes the process of building a data access layer almost trivial.
+	* **H2 Database**: This project will use the [H2](https://www.h2database.com/html/main.html) in-memory database.
+
+Once filled out, the form should look like this:
+
+![The Spring Initializr webpage, filled out with this project's details](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-initializr.png)
+
+With the form filled out, tap the **GENERATE** button. The site will generate a .zip file, which  and it will automatically be downloaded to your local machine.
+
+Unzip the file to reveal the **hotsauces** project folder.
+
+
+### Defining the Resource
+
 
 The catalog stores the following attributes for each hot sauce:
 
@@ -85,63 +147,6 @@ The catalog stores the following attributes for each hot sauce:
 		<td>The spiciness of the hot sauce, expressed in <a href="https://pepperheadsforlife.com/the-scoville-scale/">Scoville heat units (SHUs).</a></td>
 	</tr>
 </table>
-
-In the first part of the project, you’ll build the API. Once built, you’ll secure it so that the endpoints for CRUD operations will require authentication, while the endpoint for testing to see if the API is active will remain public.
-
-
-## Prerequisites
-
-To follow along with this article, you’ll need the following installed on your local machine:
-
-* **[JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)**
-* Your favorite code editor.
-
-
-
-## Building the API
-
-### Scaffolding with Spring Initializr
-
-The preferred way to set up a new Spring Boot project is to use **Spring Initializr,** a web application that generates a basic Spring Boot project, complete with all the necessary configurations, your choice of dependencies, and Gradle or Maven build files. It’s available online at [start.spring.io](https://start.spring.io/) and built into the Ultimate Edition of IntelliJ IDEA.
-
-You *could* create a new project manually using Spring Boot’s command-line interface, but Spring Initializr organizes its projects using a generally-accepted directory layout for JVM-based projects. This makes your projects easier to maintain, and lets you focus on what your application actually *does*.
-
-Point your favorite browser at the [Spring Initializr page](https://start.spring.io/):
-
-
-
-Here’s how you should fill it out:
-
-* *Project:* Select **Gradle Project**.
-* *Language:* Select **Kotlin**.
-* *Spring Boot:* Select **2.3.3**.
-* *Project Metadata:*
-	* *Group:* Enter **com.auth0**.
-	* *Artifact:* Enter **hotsauces**.
-	* *Name:* This will autofill; just use the value in this field.
-	* *Description:* 
-	* *Package name:* This will autofill; just use the value in this field.
-	* *Packaging:* Select **Jar**.
-	* *Java:* Select **11**.
-* *Dependencies:* Tap the **ADD DEPENDENCIES...** button and choose the following:
-	* **Spring Boot DevTools**
-	* **Spring Web**
-	* **Spring Data JPA**
-	* **H2 Database**
-
-Once filled out, the form should look like this:
-
-![](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-initializr.png)
-
-With the form filled out, tap the **GENERATE** button. The site will generate a .zip file, which  and it will automatically be downloaded to your local machine.
-
-Unzip the file to reveal the **hotsauces** project folder.
-
-
-### Defining the Resource
-
-
-
 
 
 
