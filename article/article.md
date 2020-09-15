@@ -200,7 +200,7 @@ Kotlin classes, data classes included, have a constructor build into the class h
 
 Even though there isn’t much to the class, it has uses some annotations to pull in a lot of extra functionality:
 
-* `HotSauce` is annontated with `@Entity`, which informs the Java Persistence API (JPA, one of the dependencies that you added in Spring Initializr) that its instances will be persisted in the database.
+* `HotSauce` is annotated with `@Entity`, which informs the Java Persistence API (JPA, one of the dependencies that you added in Spring Initializr) that its instances will be persisted in the database.
 * The `id` property is annotated with both `@Id` and `@GeneratedValue`, which makes sense, as it will map to to the `id` field in the corresponding database table.
 * The `@Lob` annotation is short for “large object,” and it’s used to annotate the `description` and `url` properties because they could contain strings longer than 256 characters. By default, JPA maps `String`s in entities to the `VARCHAR(256)` type in the database; marking a `String` as `@Lob` tells JPA to map it to the `TEXT` type instead.
 
@@ -267,25 +267,71 @@ This code sets up an interface named `HotSauceRepository` that’s based on a `C
 	</tr>
 </table> 
 
-```
-// ./src/main/kotlin/com/auth0/hotsauces/HotSauceController.kt
+You’ll use these methods in the controller, which you’ll build next.
 
-package com.auth0.hotsauces
-
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+Note that you didn’t have to do anything to connect the repository to the database. Spring Boot’s inversion of control took are of that for you.
 
 
-@RestController
-@RequestMapping("/api/hotsauces")
-class HotSauceController(private val hotSauceRepository: HotSauceRepository) {
+### Building the controller
 
-@GetMapping("/test")
-fun getHotSauce(): ResponseEntity<String> = ResponseEntity("Yup, it works!",  HttpStatus.OK)
+The controller should expose the following API endpoints:
 
-}
-```
+<table>
+	<tr>
+		<th>API endpoint</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><code><strong>GET api/hotsauces/test</strong></code></td>
+		<td>Simply returns the text **Yup, it works!**</td>
+	</tr>
+	<tr>
+		<td><code><strong>GET api/hotsauces</strong></code></td>
+		<td>
+			<p>Returns the entire collection of hot sauces.</p>
+			<p>Accepts these optional parameters:</p>
+			<ul>
+				<li><code>brandNameFilter:</code> Limits the results
+					to only those sauces whose `brandName` contains
+					the given string.</li>
+				<li><code>sauceNameFilter:</code> Limits the results
+					to only those sauces whose `sauceName` contains
+					the given string.</li>
+				<li><code>descFilter:</code> Limits the results
+					to only those sauces whose `description` contains
+					the given string.</li>
+				<li><code>minHeat:</code> Limits the results
+					to only those sauces whose `heat` rating 
+					is greater than or equal to the given number.</li>
+				<li><code>maxHeat:</code> Limits the results
+					to only those sauces whose `heat` rating 
+					is less than or equal to the given number.</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<td><code><strong>GET api/hotsauces/{id}</strong></code></td>
+		<td>Returns the hot sauce with the given id.</td>
+	</tr>
+	<tr>
+		<td><code><strong>GET api/hotsauces/count</strong></code></td>
+		<td>Returns the number of hot sauces.</td>
+	</tr>
+	<tr>
+		<td><code><strong>POST api/hotsauce</strong></code></td>
+		<td>Adds the hot sauce (provided in the request).</td>
+	</tr>
+	<tr>
+		<td><code><strong>PUT api/hotsauces/{id}</strong></code></td>
+		<td>Edits the hot sauce with the given id and saves the edited hot sauce.</td>
+	</tr>
+	<tr>
+		<td><code><strong>DELETE api/hotsauces/{id}</strong></code></td>
+		<td>Deletes the hot sauce with the given id.</td>
+	</tr>
+</table> 
+
+Create a new file named **HotSauceController.kt** in the **./src/main/kotlin/com/auth0/hotsauces/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/HotSauceController.kt
@@ -372,6 +418,18 @@ class HotSauceController(private val hotSauceRepository: HotSauceRepository) {
 
 }
 ```
+
+The code’s considerably less complex that it could be, thanks to some annotations which take care of a lot of tedious REST work:
+
+* `HotSauceController` is annotated with `@RestController`, which informs that Spring Web (yet another one of the dependencies that you added in Spring Initializr) that this class is a REST controller and that it should include the neessary underlying REST functionality.
+* `HotSauceController` is also annotated with `@RequestMapping("/api/hotsauces")` which means that every method in the class that responds to a request responds to requests whose endpoint begins with `api/hotsauces`.
+* Any method annotated with `@GetMapping()` responds to `GET` requests. If `@GetMapping()` takes a parameter, it means that it responds to requests whose endpoint begins with that parameter. Parameters in braces (`{` and `}`) are variable parameters.
+* Any method annotated with `@PostMapping()`, `@PutMapping()`, and `@DeleteMapping` is similar to methods, annotated with `@GetMapping()`, except that they respond to `POST`, `PUT`, and `DELETE` requests respectively.
+
+You could run the app now and it would work, but since the database in in-memory and unitialized, you wouldn’t have any hot sauces to work with. Let’s add a class to load the database with some initial values.
+
+
+### Initializing the database
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/DataLoader.kt
