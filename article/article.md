@@ -10,7 +10,8 @@ Learn how to write a Spring Boot API in Kotlin and secure it with Auth0.
 
 ### Spring Framework
 
-![Spring Framework icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-framework-icon.jpg)
+[//]: # (![Spring Framework icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-framework-icon.jpg))
+<img alt="Spring Framework icon" src="http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-framework-icon.jpg" align="right" style="padding: 10;">
 
 [Spring Framework](https://spring.io/projects/spring-framework), often shortened to just “Spring”, is a popular open source application framework for the Java platform. It’s built on the principle of [inversion of control](https://dzone.com/articles/understanding-inversion-of-control-and-dependency), whose name implies that control of a Spring application is quite different from the way program control happens in traditional software. Instead of your code directing the application and calling on functionality from a library or framework, the framework directs the application and calls on the functionality of your code.
 
@@ -22,13 +23,15 @@ While Spring is often used for web and server-based applications, it’s a gener
 
 ### Spring Boot
 
-![Spring Boot icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-boot-icon.jpg)
+[//]: # (![Spring Boot icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-boot-icon.jpg))
+<img alt="Spring Boot icon" src="http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-boot-icon.jpg" align="left"  style="padding: 10;">
 
 [Spring Boot](https://spring.io/projects/spring-boot) is a framework built on top of Spring that simplifies Spring development. It does this by enforcing an [opinionated](https://www.quora.com/What-is-a-Opinionated-Framework) approach to Spring application development through [“convention over configuration”](https://facilethings.com/blog/en/convention-over-configuration), the use of default setups that applications are likely to use, and a standardized application structure created by a generator that goes by the decidedly “Web 2.0” name of [Spring Initializr](https://www.tiobe.com/tiobe-index/). Thanks to its “it just works” approach, it’s propbably the fastest way to develop applications with the Spring framework.
 
 ### Kotlin
 
-![Kotlin icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/kotlin-icon.jpg)
+[//]: # (![Kotlin icon](http://www.globalnerdy.com/wp-content/uploads/2020/09/kotlin-icon.jpg))
+<img alt="Kotlin icon" src="http://www.globalnerdy.com/wp-content/uploads/2020/09/kotlin-icon.jpg" align="right" style="padding: 10;">
 
 [Kotlin](https://kotlinlang.org/) is part of the wave of programming languages that appeared in the 2010s, which includes [Dart](https://dart.dev/), [Go](https://golang.org/), [Rust](https://www.rust-lang.org/), and [Swift](https://developer.apple.com/swift/). These languages have a number of common traits including their own takes on object-oriented programming from the lessons of the 1990s and functional programming from the lessons of the 2000s, inferred strong static typing, and meteoric rises in popularity (all of them are in [TIOBE’s index of popular programming languages](https://www.tiobe.com/tiobe-index/), and all of them except Kotlin are in the top 20).
 
