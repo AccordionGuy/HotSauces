@@ -194,7 +194,7 @@ data class HotSauce(
 )
 ```
 
-`HotSauce` is a Kotlin **[data class](https://kotlinlang.org/docs/reference/data-classes.html)**, whose job is to hold data. Data classes all properties and no methods — or at least no explicitly defined methods, anyway. The compiler automatically provides a handful of “behind the scenes” methods, including `equals()`, `hashCode()`, and `toString()`.
+`HotSauce` is a Kotlin **[data class](https://kotlinlang.org/docs/reference/data-classes.html)**, whose job is to hold data. Data classes are all properties and no methods — or at least no explicitly defined methods, anyway. The compiler automatically provides a handful of “behind the scenes” methods, including `equals()`, `hashCode()`, and `toString()`.
 
 Kotlin classes, data classes included, have a constructor build into the class header. This constructor, called the **primary constructor**, takes its parameters in the parentheses that follow the class name. `HotSauce`, like many data classes,  is just a class header and primary costructor, and nothing else.
 
