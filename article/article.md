@@ -204,11 +204,22 @@ Even though there isn’t much to the class, it has uses some annotations to pul
 * The `id` property is annotated with both `@Id` and `@GeneratedValue`, which makes sense, as it will map to to the `id` field in the corresponding database table.
 * The `@Lob` annotation is short for “large object,” and it’s used to annotate the `description` and `url` properties because they could contain strings longer than 256 characters. By default, JPA maps `String`s in entities to the `VARCHAR(256)` type in the database; marking a `String` as `@Lob` tells JPA to map it to the `TEXT` type instead.
 
+With `HotSauce` defined, you have a **model** that represents hot sauces in the real world. By annotating it with `@Entity`, you’ve specified that instances of `HotSauce` should be converted into **entities** — that is, instances that have been saved to a database.
+
+It’s time to set up something to save `HotSauce` instances.
 
 
+### Adding Data Access with a `CrudRepository`
 
+The [Repository pattern](https://deviq.com/repository-pattern/) provides a layer of abstraction between an application’s models and the system used to store data. A repository provides a collection-style interface to the models, with methods for retrieving the whole collection, retrieving a specific item, and adding, editing, and deleting items. The repository insulates the models from the usual database concerns, such as connecting with it, setting up a reader, or worrying about things like cursors.
 
-# *** TODO ***
+Spring provides a number of repository interfaces. In this project, you’ll use the [`CrudRepository`](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) interface to act as the intermediary between `HotSauce` and the H2 database (another one of the dependencies you added in Spring Initializr) as shown below:
+
+![Repository Pattern](http://www.globalnerdy.com/wp-content/uploads/2020/09/repository-pattern.png)
+
+In this exercise, the underlying data store is the H2 in-memory database. The Repository pattern makes it so that changing the database doesn’t require you to make any changes to `HotSauce`, and Spring’s inversion of control architecture makes it so that such a change doesn’t even require a change to the `CrudRepository`.
+
+Create a new file named **HotSauceRepository.kt** in the **./src/main/kotlin/com/auth0/hotsauces/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/HotSauceRepository.kt
@@ -220,6 +231,41 @@ import org.springframework.data.repository.CrudRepository
 
 interface HotSauceRepository: CrudRepository<HotSauce, Long>
 ```
+
+This code sets up an interface named `HotSauceRepository` that’s based on a `CrudRepository` of entities based on the `HotSauce` model, each of which is uniquely identified by a `Long` (namely, the `id` property of `HotSauce`).
+
+`CrudRepository` provides a set of methods for performing the standard set of CRUD operations. Here’s the subset that you’ll use in this project:
+
+<table>
+	<tr>
+		<th>Method</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td><code><strong>count()</strong></code></td>
+		<td>Returns the number of entities.</td>
+	</tr>
+	<tr>
+		<td><code><strong>deleteById({id})</strong></code></td>
+		<td>Deletes the entity with the given id.</td>
+	</tr>
+	<tr>
+		<td><code><strong>existsById({id})</strong></code></td>
+		<td>Returns `true` if the entity with the given id exists.</td>
+	</tr>
+	<tr>
+		<td><code><strong>findAll()</strong></code></td>
+		<td>Retrieves all the entities.</td>
+	</tr>
+	<tr>
+		<td><code><strong>findById({id})</strong></code></td>
+		<td>Retrieves the entity with the given id.</td>
+	</tr>
+	<tr>
+		<td><code><strong>save()</strong></code></td>
+		<td>Saves the given entity.</td>
+	</tr>
+</table> 
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/HotSauceController.kt
