@@ -31,63 +31,22 @@ Kotlin is unique in its origins: It’s a programming language designed by JetBr
 Since Spring and Spring Boot are based on the Java platform, you can use them to build applications using any JVM-based programming language, which includes Kotlin. If Java’s verbosity is bringing you down, or if you’re an Android developer who wants to use the same language to write the back end for your app, Spring and Spring Boot development in Kotlin is for you!
 
 
-## Prerequisites
-
-To follow along with this article, you’ll need the following installed on your local machine:
-
-* **[JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)**
-* Your favorite code editor.
-
-
-
-
-
-
 ## What You’ll Build: A Hot Sauce API
 
-## Building the API
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/a-hot-sauce-api.jpg)
 
-### Scaffolding with Spring Initializr
+The API you’ll build will be a catalog of hot sauces. It will be a simple one, exposing just a single resource named **hotsauces**. 
 
-The preferred way to set up a new Spring Boot project is to use **Spring Initializr,** a web application that generates a basic Spring Boot project, complete with all the necessary configurations, your choice of dependencies, and Gradle or Maven build files. It’s available online at [start.spring.io](https://start.spring.io/) and built into the Ultimate Edition of IntelliJ IDEA.
+The API will provide endpoints for:
 
-You *could* create a new project manually using Spring Boot’s command-line interface, but Spring Initializr organizes its projects using a generally-accepted directory layout for JVM-based projects. This makes your projects easier to maintain, and lets you focus on what your application actually *does*.
+* Confirming that the API is active
+* Getting a list of all the hot sauces in the catalog
+* Getting the number of hot sauces in the catalog
+* Adding a hot sauce to the catalog
+* Editing any hot sauce in the catalog
+* Deleting a hot sauce from the catalog
 
-Point your favorite browser at the [Spring Initializr page](https://start.spring.io/):
-
-
-
-Here’s how you should fill it out:
-
-* *Project:* Select **Gradle Project**.
-* *Language:* Select **Kotlin**.
-* *Spring Boot:* Select **2.3.3**.
-* *Project Metadata:*
-	* *Group:* Enter **com.auth0**.
-	* *Artifact:* Enter **hotsauces**.
-	* *Name:* This will autofill; just use the value in this field.
-	* *Description:* 
-	* *Package name:* This will autofill; just use the value in this field.
-	* *Packaging:* Select **Jar**.
-	* *Java:* Select **11**.
-* *Dependencies:* Tap the **ADD DEPENDENCIES...** button and choose the following:
-	* **Spring Boot DevTools**
-	* **Spring Web**
-	* **Spring Data JPA**
-	* **H2 Database**
-
-Once filled out, the form should look like this:
-
-![](./images/spring initializr.png)
-
-With the form filled out, tap the **GENERATE** button. The site will generate a .zip file, which  and it will automatically be downloaded to your local machine.
-
-Unzip the file to reveal the **hotsauces** project folder.
-
-
-### Defining the Resource
-
-The API you’ll build will be a simple one that exposes a single resource: **hotsauces**, which as the name suggests, is a catalog of hot sauces. Each hot sauce has the following attributes:
+The catalog stores the following attributes for each hot sauce:
 
 <table>
 	<tr>
@@ -126,6 +85,61 @@ The API you’ll build will be a simple one that exposes a single resource: **ho
 		<td>The spiciness of the hot sauce, expressed in <a href="https://pepperheadsforlife.com/the-scoville-scale/">Scoville heat units (SHUs).</a></td>
 	</tr>
 </table>
+
+In the first part of the project, you’ll build the API. Once built, you’ll secure it so that the endpoints for CRUD operations will require authentication, while the endpoint for testing to see if the API is active will remain public.
+
+
+## Prerequisites
+
+To follow along with this article, you’ll need the following installed on your local machine:
+
+* **[JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)**
+* Your favorite code editor.
+
+
+
+## Building the API
+
+### Scaffolding with Spring Initializr
+
+The preferred way to set up a new Spring Boot project is to use **Spring Initializr,** a web application that generates a basic Spring Boot project, complete with all the necessary configurations, your choice of dependencies, and Gradle or Maven build files. It’s available online at [start.spring.io](https://start.spring.io/) and built into the Ultimate Edition of IntelliJ IDEA.
+
+You *could* create a new project manually using Spring Boot’s command-line interface, but Spring Initializr organizes its projects using a generally-accepted directory layout for JVM-based projects. This makes your projects easier to maintain, and lets you focus on what your application actually *does*.
+
+Point your favorite browser at the [Spring Initializr page](https://start.spring.io/):
+
+
+
+Here’s how you should fill it out:
+
+* *Project:* Select **Gradle Project**.
+* *Language:* Select **Kotlin**.
+* *Spring Boot:* Select **2.3.3**.
+* *Project Metadata:*
+	* *Group:* Enter **com.auth0**.
+	* *Artifact:* Enter **hotsauces**.
+	* *Name:* This will autofill; just use the value in this field.
+	* *Description:* 
+	* *Package name:* This will autofill; just use the value in this field.
+	* *Packaging:* Select **Jar**.
+	* *Java:* Select **11**.
+* *Dependencies:* Tap the **ADD DEPENDENCIES...** button and choose the following:
+	* **Spring Boot DevTools**
+	* **Spring Web**
+	* **Spring Data JPA**
+	* **H2 Database**
+
+Once filled out, the form should look like this:
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/spring-initializr.png)
+
+With the form filled out, tap the **GENERATE** button. The site will generate a .zip file, which  and it will automatically be downloaded to your local machine.
+
+Unzip the file to reveal the **hotsauces** project folder.
+
+
+### Defining the Resource
+
 
 
 
