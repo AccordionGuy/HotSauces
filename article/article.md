@@ -735,9 +735,33 @@ Suppose that we want to allow only authorized applications to have access to the
 
 You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens, let’s take a look at how API authentication works.
 
-### 
 
+### The Nightclub Metaphor
 
+[There’s no shortage of diagrams like the one below to explain API authentication with OAuth2 on the internet...](https://www.google.com/search?q=oauth2+api)
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/standard-oauth2-diagram.png)
+
+...but here’s a more fun, easier-to-grasp way to look at it: The Nightclub Metaphor!
+
+A number of nightclubs have a two-step process to control who gets in and who doesn’t. First, there’s an initial phase where the club-goer goes to a window and shows some ID...
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/mclovin-drivers-license.png)
+
+...and if the ID passes inspection, the club-goer is given something that’s easy to see in a nightclub environment. Often, it’s a wristband:
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/wristbands.png)
+
+The wristband is visible proof — a *token* — that the club-goer has been cleared to enter the club. The club-goer can now show the wristband to the bouncers guarding the entrance to be let in.
+
+The better-run nightclubs change their wristbands every night. One night, it’ll be blue, and on the next night, it’ll be a different color. This prevents club-goers from reusing the previous night’s wristband to get in.
+
+API security with Auth0, which uses OAuth2, works in a similar way:
+
+* **Showing ID at the window:** You first assemble a set of credentials, which you use to obtain an access token.
+* **Showing your wristband to the bouncers:** You use the access token to make use of authenticated API endpoints.
+
+With that in mind, it’s time to secure the API. This needs to be done both on the Auth0 side as well as in the application.
 
 
 ## Setting Up API Authentication on the Auth0 Side
@@ -1084,7 +1108,7 @@ Instead of a JSON list of dictionaries of hot sauces, you’ll get an empty repl
 HTTP/1.1 401
 ```
 
-The **401** status code means “Unauthorized”. To refer back to the nightclub metaphor, you’re allowed in the “general public” part of the club, but now you’re trying to get into the VIP room without a wristband.
+The **401** status code means “Unauthorized”. To refer back to the nightclub metaphor, you’re trying to get into the club without a wristband.
 
 Make the request, this time including the token, and let’s use all the cURL command options:
 
