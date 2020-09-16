@@ -60,7 +60,8 @@ In the first part of the project, you’ll build the API. Once built, you’ll s
 To follow along with this article, you’ll need the following installed on your local machine:
 
 * **[JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)**
-* Your favorite code editor.
+* The [curl](https://curl.haxx.se/) command line tool 
+* Your favorite code editor
 
 You’ll also need internet access, as you’ll be using the Spring Initializr web page and the [Gradle](https://gradle.org/) build tool, which goes online to download project dependencies.
 
@@ -429,7 +430,7 @@ The code’s considerably less complex that it could be, thanks to some annotati
 
 ### Initializing the database
 
-You could run the app now and it would work, but since the database in in-memory and unitialized, you wouldn’t have any hot sauces to work with. Let’s add a class to load the database with some initial values.
+You could run the app now and it would work. There’s just one problem: Since the database in in-memory and unitialized, you don’t have any data to work with! Let’s add a class to preload the database with some initial hot sauces.
 
 Create a new file named **DataLoader.kt** in the **./src/main/kotlin/com/auth0/hotsauces/** directory:
 
@@ -582,7 +583,158 @@ fun String.trimIndentsAndRemoveNewlines() = this.trimIndent().replace("\n", " ")
 This adds the method `trimIndentsAndRemoveNewlines()` to the `String` class, which removes indentations and newline characters from multiline strings. The assignments to each hot sauce’s `description` property is done using multiline strings (which are delimited with triple-quotes — `"""`) to make the code easier to read.
 
 
-## Authorize
+## Trying out the API
+
+You’re now ready to take the API for a trial run. To run the application, open a terminal, go to the application’s directory and enter the following command:
+
+```
+./gradlew bootRun
+```
+
+This sets Gradle in motion, causing it to download any needed plugins and dependencies, then launch the application. You’ll see a lot of output, which will start with this...
+
+```
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.3.3.RELEASE)
+```
+
+...and after a lot of status messages, will end with this:
+
+```
+> :bootRun
+```
+
+If you don’t see an error message and the last line of the output is > :bootRun, it means that the project is running properly and listening to **localhost:8080** for incoming requests. You can now start making API calls.
+
+
+### Is this thing on?
+
+Start by confirming that sending a GET request to the test endpoint results in a “Yup, it works!” response.
+
+Open a new terminal and enter the following:
+
+```
+$ curl http://localhost:8080/api/hotsauces/test
+```
+
+This should be the response:
+
+```
+Yup, it works!
+```
+
+
+### Count hot sauces
+
+Send a GET request to the `/api/hotsauces/count` endpoint to get the current number of hot sauces in the database:
+
+```
+$ curl http://localhost:8080/api/hotsauces/count
+```
+
+If you haven’t added or removed any hot sauces since starting the application, the API should report that there are 9:
+
+```
+9
+```
+
+
+### List hot sauces
+
+To get the complete list of hot sauces, send a GET request to `/api/hotsauces`:
+
+```
+$ curl http://localhost:8080/api/hotsauces/
+```
+
+The response will be a JSON array of dictionaries, with each dictionary representing a hot sauce.
+
+```
+[{"id":1,"brandName":"Truff","sauceName":"Hot Sauce","
+
+...
+
+"url":"https://www.saucemania.com.au/karma-sauce-burn-after-eating-hot-sauce-148ml/","heat":669000}]
+```
+
+Try using the optional parameters to limit the results. In the example below, the maxHeat parameter is being used to limit the response to hot sauces with a Scoville rating of 10,000 or less:
+
+```
+$ curl http://localhost:8080/api/hotsauces?maxHeat=10000
+```
+
+If you haven’t added or removed any hot sauces since starting the application, the API should return a list of three hot sauces:
+
+```
+[{"id":1,"brandName":"Truff","sauceName":"Hot Sauce","description":"Our sauce is a curated blend of ripe chili peppers, organic agave nectar, black truffle, and  savory spices. This combination of ingredients delivers a flavor profile unprecedented to hot sauce.","url":"https://truffhotsauce.com/collections/sauce/products/truff","heat":2500},{"id":2,"brandName":"Truff","sauceName":"Hotter Sauce","description":"TRUFF Hotter Sauce is a jalapeño rich blend of red chili peppers, Black Truffle and Black Truffle  Oil, Organic Agave Nectar, Red Habanero Powder, Organic Cumin and Organic Coriander. Perfectly  balanced and loaded with our same iconic flavor, TRUFF Hotter Sauce offers a “less sweet, more heat” rendition of the Flagship original.","url":"https://truffhotsauce.com/collections/sauce/products/hotter-truff-hot-sauce","heat":4000},{"id":3,"brandName":"Cholula","sauceName":"Original","description":"Cholula Original Hot Sauce is created from a generations old recipe that features carefully-selected arbol and piquin peppers and a blend of signature spices. We love it on burgers and chicken but have heard it’s amazing on pizza. Uncap Real Flavor with Cholula Original.","url":"https://www.cholula.com/original.html","heat":3600}]
+```
+
+
+### Add a new hot sauce
+
+Add a new sauce to the database by sending a POST request to `/api/hotsauces/`, along with the attributes of the new sauce — except `id`, which will automatically be assigned to the new sauce — in JSON dictionary form:
+
+```
+$ curl --request POST \
+  --url http://localhost:8080/api/hotsauces/ \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "Dave’s Gourmet", "sauceName": "Temporary Insanity", "url": "https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE", "description": "This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!", "heat": 57000}'
+```
+
+The hot sauce will be added to the database, and the API will respond with a JSON dictionary containing all its attributes, including the `id` assigned to it:
+
+```
+{"id":10,"brandName":"Dave’s Gourmet","sauceName":"Temporary Insanity","description":"This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!","url":"https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE","heat":57000}
+```
+
+You can confirm that the hot sauce has been added to the database by requesting the complete list, or by requesting it by id.
+
+
+### Edit a hot sauce
+
+Make changes to a hot sauce in the database by sending a PUT request to `/api/hotsauces/{id}` where `{id}` is the hot sauce’s `id` value, along with the attributes you wish to change in JSON dictionary form: 
+
+```
+$ curl --request PUT \
+  --url http://localhost:8080/api/hotsauces/10 \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "NewCo", "sauceName": "Generic Hot Sauce", "description": "It’s hot. It’s sauce. That’s it.", "heat": 1000}'
+```
+
+The hot sauce will be updated with your changes, and the API will respond with a JSON dictionary containing the updated hot sauce’s attributes:
+
+```
+{"id":10,"brandName":"NewCo","sauceName":"Generic Hot Sauce","description":"It’s hot. It’s sauce. That’s it.","url":"https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE","heat":1000}
+```
+
+
+### Delete a hot sauce
+
+Delete a hot sauce by sending a DELETE request to `/api/hotsauces/{id}` where `{id}` is the hot sauce’s `id` value:
+
+```
+curl --request DELETE \
+  --url http://localhost:8080/api/hotsauces/10
+```
+
+You can confirm that the hot sauce has been removed from the database by requesting the complete list.
+
+
+## Securing the API
+
+Right now, the entire API is unsecured. All its endpoints are available to anyone with the URL and the ability to send HTTP requests.
+
+Suppose that we want to allow only authorized applications to have access to the endpoints of the API that allow accessing, adding, editing, and deleting hot sauces. The remaining endpoints — the test endpoint and the one that reports the number of hot sauces — can remain generally available.
+
+You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens, let’s take a look at how API authentication works.
+
+
+### 
 
 ![Hawaii driver's license featuring Joey deVilla as “McLovin’”](./images/mclovin drivers license.png)
 
@@ -673,6 +825,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
             .mvcMatchers("/api/hotsauces/test").permitAll()
+            .mvcMatchers("/api/hotsauces/count").permitAll()
             .mvcMatchers("/api/hotsauces").authenticated()
             .mvcMatchers("/api/hotsauces/*").authenticated()
             .and()
