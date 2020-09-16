@@ -33,6 +33,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
             .mvcMatchers("/api/hotsauces/test").permitAll()
+            .mvcMatchers("/api/hotsauces/count").permitAll()
             .mvcMatchers("/api/hotsauces").authenticated()
             .mvcMatchers("/api/hotsauces/*").authenticated()
             .and()
