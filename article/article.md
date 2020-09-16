@@ -734,7 +734,26 @@ Suppose that we want to allow only authorized applications to have access to the
 You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens, let’s take a look at how API authentication works.
 
 
-### 
+### Registering the API in Auth0
+
+At this point, you’ll need to log into Auth0. (If you don’t have one yet, you can [sign up for a free Auth0 account](https://auth0.com/signup).)
+
+Once you’ve logged in, [navigate to the *APIs* page](https://manage.auth0.com/?&_ga=2.55268258.821728906.1599742219-782382229.1597890849#/apis) and tap the **CREATE API** button located near the upper right corner of the page.
+
+A form will appear:
+
+![](./images/new api.png)
+
+Fill it out like so:
+
+* *Name:* Enter **HotSauces**.
+* *Identifier:* Enter **http://hotsauces.demo**.
+* *Signing Algorithm:* Select **RS256**.
+
+When you’re done providing this information, tap the **CREATE** button.
+
+![](./images/hotsauces api settings page.png)
+
 
 ![Hawaii driver's license featuring Joey deVilla as “McLovin’”](./images/mclovin drivers license.png)
 
@@ -849,11 +868,11 @@ $ curl get http://localhost:8080
 
 ![](./images/apis page.png)
 
-![](./images/new api.png)
+
 
 ![](./images/apis page with hotsauces api.png)
 
-![](./images/hotsauces api settings page.png)
+
 
 ![](./images/permissions 1.png)
 
