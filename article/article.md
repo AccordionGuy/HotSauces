@@ -591,7 +591,9 @@ You’re now ready to take the API for a trial run. To run the application, open
 ./gradlew bootRun
 ```
 
-This sets Gradle in motion, causing it to download any needed plugins and dependencies, then launch the application. You’ll see a lot of output, which will start with this...
+This command was included in the set of files that Spring Initilizr generated. It sets Gradle in motion, causing it to download any needed plugins and dependencies, after which it launches the application. 
+
+When it starts, you’ll see a lot of output, beginning with this:
 
 ```
   .   ____          _            __ _ _
@@ -603,7 +605,7 @@ This sets Gradle in motion, causing it to download any needed plugins and depend
  :: Spring Boot ::        (v2.3.3.RELEASE)
 ```
 
-...and after a lot of status messages, will end with this:
+A lot of status messages will scroll by, but eventually the scrolling will end, and you’ll see this will end with this:
 
 ```
 > :bootRun
@@ -738,11 +740,13 @@ You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens
 
 At this point, you’ll need to log into Auth0. (If you don’t have one yet, you can [sign up for a free Auth0 account](https://auth0.com/signup).)
 
-Once you’ve logged in, [navigate to the *APIs* page](https://manage.auth0.com/?&_ga=2.55268258.821728906.1599742219-782382229.1597890849#/apis) and tap the **CREATE API** button located near the upper right corner of the page.
+Once you’ve logged in, [navigate to the *APIs* page](https://manage.auth0.com/?&_ga=2.55268258.821728906.1599742219-782382229.1597890849#/apis)...
 
-A form will appear:
+![Auth0 deshboard APIs page](http://www.globalnerdy.com/wp-content/uploads/2020/09/apis-page.png)
 
-![](./images/new api.png)
+...and tap the **CREATE API** button located near the upper right corner of the page. A form will appear, asking for basic information about the API:
+
+![New API pop-up form](http://www.globalnerdy.com/wp-content/uploads/2020/09/new-api.png)
 
 Fill it out like so:
 
@@ -750,9 +754,27 @@ Fill it out like so:
 * *Identifier:* Enter **http://hotsauces.demo**.
 * *Signing Algorithm:* Select **RS256**.
 
-When you’re done providing this information, tap the **CREATE** button.
+When you’re done providing this information, tap the **CREATE** button. The API will be registered in Auth0, and you’ll be taken to its **Quick Start** page, pictured below:
 
-![](./images/hotsauces api settings page.png)
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/quick-start-page.png)
+
+Since t 
+
+Tap on **Machine to Machine Applications**, which will take you to this page:
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-applications.png)
+
+There will be a list of applications at the bottom of the page. One of them will be **HotSauces**. Tap on its name. You’ll be taken to HotSauces’ Machine to Machine Settings page, which contains information that you’ll need to get the token:
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-settings-1.png)
+
+Use the “copy” buttons on the right side of these fields to copy and paste their contents into the same text editor window where you pasted the HotSauces API Identifier:
+
+* Domain
+* Client ID
+* Client Secret
+
+
 
 
 ![Hawaii driver's license featuring Joey deVilla as “McLovin’”](./images/mclovin drivers license.png)
@@ -866,7 +888,7 @@ $ curl get http://localhost:8080
 
 
 
-![](./images/apis page.png)
+
 
 
 
