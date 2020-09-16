@@ -583,6 +583,19 @@ fun String.trimIndentsAndRemoveNewlines() = this.trimIndent().replace("\n", " ")
 This adds the method `trimIndentsAndRemoveNewlines()` to the `String` class, which removes indentations and newline characters from multiline strings. The assignments to each hot sauce’s `description` property is done using multiline strings (which are delimited with triple-quotes — `"""`) to make the code easier to read.
 
 
+### What’s With the Numbers?
+
+You may have noticed that some of the numbers in the code contain underscore characters, such as on this line of code for the final sauce in the list:
+
+```
+heat = 669_000
+```
+
+Kotlin — like some other languages, including Python, Ruby, and Swift — ignores undescore characters in numbers. This allows you to use them the way we typically use “separator characters” to make numbers easier to read. 
+
+For example, in the U.S., we tend to write the number for “one million” as **1,000,000**, which is easier to read than 1000000. In India, the preference is to write this number as **10,00,000**, and in some countries in Europe, it’s **1.000.000**. By allowing the underscore as the grouping character for numbers and ignoring it, Kotlin lets you group digits in numbers as you see fit.
+
+
 ## Trying Out the API
 
 You’re now ready to take the API for a trial run. To run the application, open a terminal, go to the application’s directory and enter the following command:
@@ -795,7 +808,7 @@ You’ll be taken to the API’s newly registered **Quick Start** page, pictured
 
 Tap on **Machine to Machine Applications**, which will take you to this page:
 
-![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-applications.png)
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-applications-2.png)
 
 This is the first of two pages that provide information that you need in order to get the access token. 
 
