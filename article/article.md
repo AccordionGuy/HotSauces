@@ -736,7 +736,11 @@ Suppose that we want to allow only authorized applications to have access to the
 You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens, let’s take a look at how API authentication works.
 
 
-### Registering the API in Auth0
+
+
+## Setting Up API Authentication on the Auth0 Side
+
+### Registering the API
 
 At this point, you’ll need to log into Auth0. (If you don’t have one yet, you can [sign up for a free Auth0 account](https://auth0.com/signup).)
 
@@ -754,56 +758,151 @@ Fill it out like so:
 * *Identifier:* Enter **http://hotsauces.demo**.
 * *Signing Algorithm:* Select **RS256**.
 
-When you’re done providing this information, tap the **CREATE** button. The API will be registered in Auth0, and you’ll be taken to its **Quick Start** page, pictured below:
+When you’re done providing this information, tap the **CREATE** button. The API will be registered in Auth0.
+
+
+### Getting an Access Token
+
+You’ll be taken to the API’s newly registered **Quick Start** page, pictured below:
 
 ![](http://www.globalnerdy.com/wp-content/uploads/2020/09/quick-start-page.png)
-
-Since t 
 
 Tap on **Machine to Machine Applications**, which will take you to this page:
 
 ![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-applications.png)
 
-There will be a list of applications at the bottom of the page. One of them will be **HotSauces**. Tap on its name. You’ll be taken to HotSauces’ Machine to Machine Settings page, which contains information that you’ll need to get the token:
+This is the first of two pages that provide information that you need in order to get the access token. 
+
+You’ll be copying four items, and you may find it helpful to open a text editor so that you have some place in which to paste them.
+
+Copy the API Identifier, which is located just below the page’s headline, and paste it into the text editor.
+
+Your text editor should look something like this:
+
+```
+API Identifier: {API Identifier}
+```
+
+If you’ve been following the steps in this exercise, {API Identifier} will be **http://hotsauces.demo**.
+
+There will be a list of applications at the bottom of the page. One of them will be **HotSauces**. Tap on its name. You’ll be taken to HotSauces’ **Machine to Machine → Settings** page, which contains information that you’ll need to get the token:
 
 ![](http://www.globalnerdy.com/wp-content/uploads/2020/09/machine-to-machine-settings-1.png)
 
-Use the “copy” buttons on the right side of these fields to copy and paste their contents into the same text editor window where you pasted the HotSauces API Identifier:
+Use the “copy” buttons on the right side of these fields to copy and paste their contents into the same text editor where you pasted the API Identifier:
 
 * Domain
 * Client ID
 * Client Secret
 
+Your text editor should now look something like this:
+
+```
+API Identifier: {API Identifier}
+Domain: {Domain}
+Client ID: {Client ID}
+Client Secret: {Client Secret}
+```
+
+You now have the necessary pieces of information needed to request a token. You’ll request the token by sending a POST request containing the information.
+
+You might find it easier to assemble the POST request in the same text editor where you pasted the information.
+
+Start with this cURL command...
+
+```
+curl --request POST \
+  --url 'https://{Domain}/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=client_credentials \
+  --data 'client_id={Client ID}' \
+  --data client_secret={Client Secret}
+  --data audience={API Identifier}
+```
+
+...and replace `{Domain}`, `{Client ID}`, `{Client Secret}`, and `{API Identifier}` with the corresponding values you copied.
+
+In response, you should receive a JSON dictionary that looks like this:
+
+```
+{
+   "access_token":"{Access Token}",
+   "expires_in":86400,
+   "token_type":"Bearer"
+}
+```
+
+Note that one of the dictionary keys is `expires_in`, which specifies that the toekn will expire in 86,400 seconds, or in more convenient units, 24 hours. After that time has elapsed, the token will be invalid and you’ll have to request a new one following the same steps above.
+
+Copy the `{Access token}` value and paste it into the text editor with the other values.
+
+Your text editor should now look something like this:
+
+```
+API Identifier: {API Identifier}
+Domain: {Domain}
+Client ID: {Client ID}
+Client Secret: {Client Secret}
+
+Access Token: {Access Token}
+```
+
+You’ve done all the necessary setup on the Auth0 side. It’s now time to do the same on the application side.
 
 
+## Setting Up API Authentication on the Application Side
 
-![Hawaii driver's license featuring Joey deVilla as “McLovin’”](./images/mclovin drivers license.png)
+### Adding Security Dependencies
 
+The first step is to add the necessary security dependencies to the Gradle build file.
+
+Add the following lines to the `dependencies` block in **./build.gradle.kts**:
+
+```
+// ./build.gradle.kts (the dependencies block)
+
+implementation("org.springframework.boot:spring-boot-starter-security")
+implementation("org.springframework.security:spring-security-oauth2-resource-server")
+implementation("org.springframework.security:spring-security-oauth2-jose")
+implementation("org.springframework.security:spring-security-config")
+```
+
+Note that all these dependencies have “security” in their name, and that two of them also include “oauth2”.
+
+The first time you run the application after adding these lines to the Gradle build file, Gradle will download and install these dependencies.
+
+
+### Adding a Configuration File
+
+The next step is to create a file that configures the application to use the correct API identifier and domain when authenticating with Auth0.
+
+Create a new file named **application.yml** in the **./src/main/resources/** directory:
 
 ```
 # ./src/main/resources/application.yml
 
 auth0:
-  audience: http://hotsauces.demo
+  audience: {API Identifier}
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://dev-ne4fe9k3.us.auth0.com/
+          issuer-uri: {Domain}
 ```
 
-```
-// Add the following lines to the dependencies block in
-// ./build.gradle.kts
+In the file shown above, replace `{API Identifier}` and `{Domain}` with the values that you copied into your text editor. If you’ve been following the steps in this exercise, `{API Identifier}` will be **http://hotsauces.demo**.
 
-implementation("org.springframework.boot:spring-boot-starter-security")
-implementation ("org.springframework.security:spring-security-oauth2-resource-server")
-implementation ("org.springframework.security:spring-security-oauth2-jose")
-implementation ("org.springframework.security:spring-security-config")
-```
+The `{API Identifier}` value will be used to tell Auth0 which API is asking for authentication, and the `{Domain}` value allows Spring’s security to get the authorization server’s public keys and validate the access token.
 
-![](./images/new security package.png)
+
+### Adding Security Classes
+
+
+
+
+
+
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/security/AudienceValidator.kt
@@ -874,29 +973,4 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     }
 }
 ```
-
-```
-$ curl get http://localhost:8080/api/hotsauces/test
-Yup, it works!
-```
-
-```
-$ curl get http://localhost:8080
-```
-
-
-
-
-
-
-
-
-
-![](./images/apis page with hotsauces api.png)
-
-
-
-![](./images/permissions 1.png)
-
-![](./images/machine to machine.png)
 
