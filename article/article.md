@@ -583,7 +583,7 @@ fun String.trimIndentsAndRemoveNewlines() = this.trimIndent().replace("\n", " ")
 This adds the method `trimIndentsAndRemoveNewlines()` to the `String` class, which removes indentations and newline characters from multiline strings. The assignments to each hot sauce’s `description` property is done using multiline strings (which are delimited with triple-quotes — `"""`) to make the code easier to read.
 
 
-## Trying out the API
+## Trying Out the API
 
 You’re now ready to take the API for a trial run. To run the application, open a terminal, go to the application’s directory and enter the following command:
 
@@ -734,6 +734,8 @@ Right now, the entire API is unsecured. All its endpoints are available to anyon
 Suppose that we want to allow only authorized applications to have access to the endpoints of the API that allow accessing, adding, editing, and deleting hot sauces. The remaining endpoints — the test endpoint and the one that reports the number of hot sauces — can remain generally available.
 
 You’ll use Auth0 to secure the API’s CRUD endpoints, but before that happens, let’s take a look at how API authentication works.
+
+### 
 
 
 
@@ -898,11 +900,17 @@ The `{API Identifier}` value will be used to tell Auth0 which API is asking for 
 
 ### Adding Security Classes
 
+The final step in securing the API is adding a couple of security classes. These classes enable the application to make use of Auth0’s OAuth2 authentication.
 
+Since these classes don’t directly have anything to do with the application’s main functionality, they’re often put into their own directory.
 
+Create a new directory, **security**, as a subdirectory of **./src/main/kotlin/com/auth0/hotsauces/**. The project’s directory structure should now look like this:
 
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/hotsauces-project-structure-2.png)
 
+The first security class that you’ll add is an audience validator. It confirms that the access token is actually the one for the API.
 
+Create a new file named **AudienceValidator.kt** in the **./src/main/kotlin/com/auth0/hotsauces/security/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/security/AudienceValidator.kt
@@ -926,6 +934,13 @@ class AudienceValidator(private val audience: String) : OAuth2TokenValidator<Jwt
 
 }
 ```
+
+The second security class configures API security in two ways:
+
+* It validates the access token, and
+* It specifies the levels of access you grant to the API endpoints.
+
+Create a new file named **SecurityConfig.kt** in the **./src/main/kotlin/com/auth0/hotsauces/security/** directory:
 
 ```
 // ./src/main/kotlin/com/auth0/hotsauces/security/SecurityConfig.kt
@@ -973,4 +988,145 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     }
 }
 ```
+
+Take a closer look at the `configure()` method.
+
+```
+@Throws(Exception::class)
+override fun configure(http: HttpSecurity) {
+  http.authorizeRequests()
+      .mvcMatchers("/api/hotsauces/test").permitAll()
+      .mvcMatchers("/api/hotsauces/count").permitAll()
+      .mvcMatchers("/api/hotsauces").authenticated()
+      .mvcMatchers("/api/hotsauces/*").authenticated()
+      .and()
+      .oauth2ResourceServer().jwt()
+}
+```
+
+These lines specify that the `/api/hotsauces/test` and `/api/hotsauces/count` endpoints will be accessible to everyone...
+
+```
+.mvcMatchers("/api/hotsauces/test").permitAll()
+.mvcMatchers("/api/hotsauces/count").permitAll()
+```
+
+...while these specify that the `/api/hotsauces` endpoint and any other endpoint beginning with `/api/hotsauces/` require authentication. 
+
+```
+.mvcMatchers("/api/hotsauces").authenticated()
+.mvcMatchers("/api/hotsauces/*").authenticated()
+```
+
+In other words, any request to these endpoints must include a valid access token in order to work. Otherwise, those requests will get an HTTP 401 — Unauthorized — response.
+
+Here’s what the project’s final directory structure looks like:
+
+![](http://www.globalnerdy.com/wp-content/uploads/2020/09/hotsauces-project-structure-3.png)
+
+
+## Trying Out the Secured API
+
+Now that you’ve secured the API, it’s time to try it out!
+
+Open a terminal, navigate to the project directory, and enter `./gradlew bootRun`. 
+
+
+### Trying the Public Endpoints
+
+Start with the endpoints that remained public. Send a GET request to the test endpoint results in a “Yup, it works!” response.
+
+Open a new terminal and enter the following:
+
+```
+$ curl -i http://localhost:8080/api/hotsauces/test
+```
+
+The `-i` option tells cURL to `i`nclude the HTTP response headers in its output. By using it, you can see the HTTP status code for the API’s reponse.
+
+The response should still be `Yup, it works!`. It will be preceded by the response header, which should look like this:
+
+```
+HTTP/1.1 200
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 14
+Date: {Date and time when the response was issued}
+```
+
+The status code is the number at the end of the header’s first line: **200**, or “OK”.
+
+Try the endpoint that reports the number of hot sauces in the database:
+
+```
+$ curl -i http://localhost:8080/api/hotsauces/count
+```
+
+The response should still be `9`, and its HTTP status code will also be **200**.
+
+
+### Trying the Authenticated Endpoints
+
+Before using the token, try requesting a list of all the hot sauces without it:
+
+```
+$ curl -i http://localhost:8080/api/hotsauces/
+```
+
+Instead of a JSON list of dictionaries of hot sauces, you’ll get an empty reply. The first line of the header should be your hint as to why:
+
+```
+HTTP/1.1 401
+```
+
+The **401** status code means “Unauthorized”. To refer back to the nightclub metaphor, you’re allowed in the “general public” part of the club, but now you’re trying to get into the VIP room without a wristband.
+
+Make the request, this time including the token, and let’s use all the cURL command options:
+
+```
+curl -i --request GET \
+  --url http://localhost:8080/api/hotsauces/ \
+  -H "Content-Type: application/json" \
+  -H "authorization: Bearer {Access Token}"
+```
+
+In the command shown above, replace `{Access Token}` with the value that you copied into your text editor.
+
+This time, when you make the request, you’ll get the list of all the hot sauces, and the HTTP status code will be **200**, indicating that it was successful.
+
+The other endpoints also require the token. Here’s how you would add a hot sauce with authentication:
+
+```
+$ curl --request POST \
+  --url http://localhost:8080/api/hotsauces/ \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "Dave’s Gourmet", "sauceName": "Temporary Insanity", "url": "https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE", "description": "This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!", "heat": 57000}' \
+  -H "authorization: Bearer {Access Token}"
+```
+
+Here’s how you’d edit the hot sauce with `id` 10...
+
+```
+$ curl --request PUT \
+  --url http://localhost:8080/api/hotsauces/10 \
+  -H "Content-Type: application/json" \
+  --data '{"brandName": "NewCo", "sauceName": "Generic Hot Sauce", "description": "It’s hot. It’s sauce. That’s it.", "heat": 1000}' \
+  -H "authorization: Bearer {Access Token}"
+```
+
+...and here’s how you would delete the hot sauce with `id` 10:
+
+```
+curl --request DELETE \
+  --url http://localhost:8080/api/hotsauces/10
+  -H "authorization: Bearer {Access Token}"
+```
+
+Congratulations — you’ve just developed and secured an API with Spring Boot, Kotlin, and Auth0!
+
 
