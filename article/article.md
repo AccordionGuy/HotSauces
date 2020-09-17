@@ -1139,7 +1139,7 @@ This time, when you make the request, you’ll get the list of all the hot sauce
 The other endpoints also require the token. Here’s how you would add a hot sauce with authentication:
 
 ```
-$ curl --request POST \
+$ curl -i --request POST \
   --url http://localhost:8080/api/hotsauces/ \
   -H "Content-Type: application/json" \
   --data '{"brandName": "Dave’s Gourmet", "sauceName": "Temporary Insanity", "url": "https://store.davesgourmet.com/ProductDetails.asp?ProductCode=DATE", "description": "This sauce has all the flavor of Dave’s Original Insanity with less heat. Finally, there’s sauce for when you only want to get a little crazy in the kitchen. Add to stews, burgers, burritos, and pizza, or any food that needs an insane boost. As with all super hot sauces, this sauce is best enjoyed one drop at a time!", "heat": 57000}' \
@@ -1149,7 +1149,7 @@ $ curl --request POST \
 Here’s how you’d edit the hot sauce with `id` 10...
 
 ```
-$ curl --request PUT \
+$ curl -i --request PUT \
   --url http://localhost:8080/api/hotsauces/10 \
   -H "Content-Type: application/json" \
   --data '{"brandName": "NewCo", "sauceName": "Generic Hot Sauce", "description": "It’s hot. It’s sauce. That’s it.", "heat": 1000}' \
@@ -1159,7 +1159,7 @@ $ curl --request PUT \
 ...and here’s how you would delete the hot sauce with `id` 10:
 
 ```
-curl --request DELETE \
+curl -i --request DELETE \
   --url http://localhost:8080/api/hotsauces/10
   -H "authorization: Bearer {Access Token}"
 ```
